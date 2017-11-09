@@ -24,4 +24,4 @@ function set_module_var() {
 
 set_module_var
 
-$MODULE_HOME/bin/appctrl.sh start
+$MODULE_HOME/appctrl.sh start
