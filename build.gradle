@@ -1,0 +1,106 @@
+buildDir = "../public/${appName}"
+
+ext {
+    distBuildNumber = System.env.BUILD_NUMBER ? "${System.env.BUILD_NUMBER}" : "unknown"
+    distBuildId = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new java.util.Date())
+    //System.env.BUILD_ID ? "${System.env.BUILD_ID}" : System.currentTimeMillis()
+    distPureFileName = "$appName-$appVersion-$distBuildNumber-$distBuildId"
+    includeToBin = ((ext.has('includeToBin') ? includeToBin : []) << ['*.properties','logback.xml']).flatten()
+}
+
+allprojects {
+    apply plugin: 'maven'
+    apply plugin: 'java'
+    configurations {
+        optional
+        compile.extendsFrom optional
+    }
+    repositories {
+        maven {
+            url "http://repo.jocean.org/nexus/content/groups/public"
+        }
+    }
+    dependencies {
+        components {
+            all { details ->
+                details.statusScheme = ["snapshot", "integration", "milestone", "release"]
+            }
+        }
+    }
+}
+
+configurations {
+    all*.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    all*.exclude group: 'log4j', module: 'log4j'
+    all*.exclude group: 'commons-logging', module: 'commons-logging'
+    all { resolutionStrategy.cacheChangingModulesFor 1, 'minutes' }
+}
+
+dependencies {
+    compile "gdt:${appName}:${appVersion}"
+}
+
+task cleanAll << {
+    println "Clean project.."
+    delete buildDir
+}
+
+task init << {
+    println '+---------------------------------------------------+'
+    println '|                                                   |'
+    println "| M A K E D I S T $appName $appVersion"
+    println '|                                                   |'
+    println '+---------------------------------------------------+'
+}
+
+task makeDist(dependsOn: [init, cleanAll], type: Zip) {
+    into('codedeploy') {
+        from 'codedeploy'
+        fileMode 0755
+    }
+    into('lib') {
+        from configurations.runtime
+    }
+    from('ctrl') {
+        fileMode 0755
+    }
+    from "$buildDir/version.txt"
+    from "$buildDir/module.txt"
+    from "$buildDir/appspec.yml"
+    archiveName = "${distPureFileName}.zip"
+    destinationDir = rootDir
+    duplicatesStrategy = 'exclude'
+}
+
+makeDist.doFirst {
+    if (!new File("$buildDir/").exists()) {
+        new File("$buildDir/").mkdirs()
+    }
+    
+    new File('.').eachFileMatch(~"$appName-.*\\.zip") { it.delete() }
+    new File("$buildDir/version.txt").text = "${distPureFileName}"
+    new File("$buildDir/module.txt").text = "${appName}"
+    new File("$buildDir/appspec.yml").text = 
+        "version: 0.0\r\n" +
+        "os: linux\r\n" +
+        "files:\r\n" +
+        "  - source: /\r\n" +
+        "    destination: /home/${appName}/current\r\n" +
+        "hooks:\r\n" +
+        "  ApplicationStop:\r\n" +
+        "    - location: codedeploy/stopAndBackup.sh\r\n" +
+        "      timeout: 300\r\n" +
+        "      runas: root\r\n" +
+        "  BeforeInstall:\r\n" +
+        "    - location: codedeploy/install_dependencies.sh\r\n" +
+        "      timeout: 300\r\n" + 
+        "      runas: root\r\n" +
+        "  AfterInstall:\r\n" +
+        "    - location: codedeploy/configure.sh\r\n" +
+        "      timeout: 300\r\n" +
+        "      runas: root\r\n" +
+        "  ApplicationStart:\r\n" +
+        "    - location: codedeploy/start.sh\r\n" +
+        "      timeout: 300\r\n" +
+        "      runas: ${appName}\r\n"
+}
