@@ -36,7 +36,7 @@ configurations {
 }
 
 dependencies {
-    compile "gdt:${appName}:${appVersion}"
+    compile "${group}:${appName}:${appVersion}"
 }
 
 task cleanAll << {
