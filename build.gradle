@@ -1,10 +1,9 @@
 buildDir = "../public/${appName}"
 
 ext {
-    distBuildNumber = System.env.BUILD_NUMBER ? "${System.env.BUILD_NUMBER}" : "unknown"
-    distBuildId = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new java.util.Date())
-    //System.env.BUILD_ID ? "${System.env.BUILD_ID}" : System.currentTimeMillis()
-    distPureFileName = "$appName-$appVersion-$distBuildNumber-$distBuildId"
+    // distBuildNumber = System.env.BUILD_NUMBER ? "${System.env.BUILD_NUMBER}" : "unknown"
+    distBuildId = new java.text.SimpleDateFormat("yyyyMMddHHmm_ss").format(new java.util.Date())
+    distFileName = "$appName-$appVersion-$distBuildId"
     includeToBin = ((ext.has('includeToBin') ? includeToBin : []) << ['*.properties','logback.xml']).flatten()
 }
 
@@ -67,7 +66,7 @@ task makeDist(dependsOn: [init, cleanAll], type: Zip) {
     }
     from "$buildDir/module.txt"
     from "$buildDir/appspec.yml"
-    archiveName = "${distPureFileName}.zip"
+    archiveName = "${distFileName}.zip"
     destinationDir = rootDir
     duplicatesStrategy = 'exclude'
 }
@@ -78,7 +77,7 @@ makeDist.doFirst {
     }
     
     new File('.').eachFileMatch(~"$appName-.*\\.zip") { it.delete() }
-    new File("$buildDir/version.txt").text = "${distPureFileName}"
+    new File("$buildDir/version.txt").text = "${distFileName}"
     new File("$buildDir/module.txt").text = "${appName}"
     new File("$buildDir/appspec.yml").text = 
         "version: 0.0\r\n" +
