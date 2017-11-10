@@ -60,11 +60,11 @@ task makeDist(dependsOn: [init, cleanAll], type: Zip) {
     }
     into('lib') {
         from configurations.runtime
+        from "$buildDir/version.txt"
     }
     from('ctrl') {
         fileMode 0755
     }
-    from "$buildDir/version.txt"
     from "$buildDir/module.txt"
     from "$buildDir/appspec.yml"
     archiveName = "${distPureFileName}.zip"
