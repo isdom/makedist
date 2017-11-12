@@ -1,8 +1,8 @@
 buildDir = "../public/${appName}"
 
 ext {
-    // distBuildNumber = System.env.BUILD_NUMBER ? "${System.env.BUILD_NUMBER}" : "unknown"
     distBuildId = new java.text.SimpleDateFormat("yyyyMMddHHmm_ss").format(new java.util.Date())
+    realVersion = appVersion
     distFileName = "$appName-$appVersion-$distBuildId"
     includeToBin = ((ext.has('includeToBin') ? includeToBin : []) << ['*.properties','logback.xml']).flatten()
 }
@@ -53,6 +53,13 @@ task init << {
 }
 
 task makeDist(dependsOn: [init, cleanAll], type: Zip) {
+    configurations.runtime.findAll { jar ->
+        ["$appName-"].any { jar.name.startsWith(it) }
+    }.collect {
+        realVersion = new java.util.jar.JarFile(it).manifest.mainAttributes.getValue('Specification-Version');
+        distFileName = "$appName-$realVersion-$distBuildId"
+    }
+    
     into('codedeploy') {
         from 'codedeploy'
         fileMode 0755
