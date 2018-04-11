@@ -24,7 +24,7 @@ function set_module_var() {
 
 set_module_var
 
-VERSION=$(cat $MODULE_HOME/version.txt)
+VERSION=$(cat $MODULE_HOME/lib/version.txt)
 BACKUPDIR=/home/$MODULE_NAME/.backup/$VERSION
 
 echo module name: $MODULE_NAME
