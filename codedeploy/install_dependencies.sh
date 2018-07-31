@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# $1 -- logback_url
+# $2 -- runcfg_url
+# $3 -- zkboot_url
+
 # BASE: the caller's base path
 # MODULE_NAME: module's name, eg: yjy-j1cn
 # MODULE_HOME: module's home, eg: /home/yjy-j1cn/current
@@ -57,27 +61,17 @@ fi
 
 # gen run.cfg
 if [ ! -f $USER_HOME/etc/run.cfg ]; then
-    echo $(f2cadm getClusterParameter --key-name=run.cfg) > $USER_HOME/etc/run.cfg
+    wget $2 -O $USER_HOME/etc/run.cfg
 fi
 
 # gen logback.xml
 if [ ! -f $USER_HOME/etc/logback.xml ]; then
-    wget $(f2cadm getClusterParameter --key-name=logback.url) -O $USER_HOME/etc/logback.xml
+    wget $1 -O $USER_HOME/etc/logback.xml
 fi
 
 # gen zkbooter.properties
 if [ ! -f $USER_HOME/etc/zkbooter.properties ]; then
-    echo -n "zk.address=" > $USER_HOME/etc/zkbooter.properties
-    echo $(f2cadm getClusterParameter --key-name=zk.address) >> $USER_HOME/etc/zkbooter.properties
-    
-    echo -n "exhibitor.hosts=" >> $USER_HOME/etc/zkbooter.properties
-    echo $(f2cadm getClusterParameter --key-name=exhibitor.hosts) >> $USER_HOME/etc/zkbooter.properties
-    
-    echo -n "exhibitor.restport=" >> $USER_HOME/etc/zkbooter.properties
-    echo $(f2cadm getClusterParameter --key-name=exhibitor.restport) >> $USER_HOME/etc/zkbooter.properties
-    
-    echo -n "zk.units.path=" >> $USER_HOME/etc/zkbooter.properties
-    echo -n $(f2cadm getClusterParameter --key-name=zk.units.path) >> $USER_HOME/etc/zkbooter.properties
+    wget $3 -O $USER_HOME/etc/zkbooter.properties
     echo "$MODULE_NAME" >> $USER_HOME/etc/zkbooter.properties
 fi
 
