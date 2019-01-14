@@ -29,7 +29,7 @@ function set_module_var() {
 set_module_var
 
 user=$MODULE_NAME
-group=$MODULE_NAME
+group=gdt
 
 #create group if not exists
 grep -E "^$group" /etc/group >& /dev/null
