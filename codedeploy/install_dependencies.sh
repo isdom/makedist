@@ -45,14 +45,14 @@ then
     useradd -g $group $user
 fi
 
-USER_HOME=/home/$MODULE_NAME
+USER_HOME=/home/$user
 
 # test if user home exist
 if [ ! -d $USER_HOME ]; then
     exit 1
 fi
 
-su - $MODULE_NAME << EOF
+su - $user << EOF
 
 # try to create logback.xml zkbooter.properties & run.cfg
 if [ ! -d $USER_HOME/etc ]; then
