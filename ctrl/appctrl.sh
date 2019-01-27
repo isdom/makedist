@@ -79,7 +79,16 @@ stop)
     else
         UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
         if [ -e $UDSFILE ];then
-            RESULT=$(echo "unfwd;stopapp;exitsrv;" | nc -U $UDSFILE)
+            RESULT=$(echo "unfwd;" | nc -U $UDSFILE)
+            echo "invoke un-forward: $RESULT"
+            RESULT=$(echo "tradecnt;" | nc -U $UDSFILE)
+            while [ "$RESULT" != "0" ];do
+                echo "wait 3s bcsof current trade count: $RESULT"
+                sleep 3s
+                RESULT=$(echo "tradecnt;" | nc -U $UDSFILE)
+            done
+            echo "current trade count is $RESULT, so stop app and exit srv"
+            RESULT=$(echo "stopapp;exitsrv;" | nc -U $UDSFILE)
             echo "STOP APP AND EXIT SRV: $RESULT"
         else
             echo "warn: could not find Unix Domain Socket $UDSFILE, just kill -9 $(cat $PIDFILE)"
