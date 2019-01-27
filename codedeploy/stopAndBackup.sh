@@ -40,18 +40,13 @@ if [ ! -d $MODULE_HOME ]; then
 fi
 
 su - $MODULE_NAME << EOF
-if [ -f $PIDFILE ]
-then
-    kill -9 $(cat $PIDFILE)
-    rm $PIDFILE
-    echo $MODULE_NAME STOPPED
-fi
+$MODULE_HOME/appctrl.sh stop
 
 if [ ! -d ~/.backup ]; then
     mkdir ~/.backup
 fi
 
-echo backup $MODULE_NAME from $MODULE_HOME to $BACKUPDIR
+echo "backup $MODULE_NAME from $MODULE_HOME to $BACKUPDIR"
 mv $MODULE_HOME $BACKUPDIR
 EOF
 

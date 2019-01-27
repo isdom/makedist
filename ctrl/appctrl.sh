@@ -55,7 +55,20 @@ start)
     echo "start java -jar ${BOOT_JAR} with args ${JAVA_OPTS}"
     nohup java $JAVA_OPTS -jar $BOOT_JAR >/dev/null &
     echo $! > $PIDFILE
-    echo STARTED
+    UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
+    trycnt=0
+    while [ ! -e $UDSFILE ];do
+        let trycnt+=1
+        if  [ $trycnt -gt 3 ];then
+            echo "can't find unix domain socket file: $UDSFILE, exit with -1"
+            exit -1
+        fi
+        echo "[$trycnt]: wait 3s for unix domain socket file: $UDSFILE"
+        sleep 3s
+    done
+    read endpoint namespace role dataid acmgroup < /home/gdt/etc/acmboot.cfg
+    RESULT=$(echo "startapp $endpoint $namespace $role $dataid $acmgroup unit/xbooter.xml;" | nc -U $UDSFILE)
+    echo "START SRV AND APP: $RESULT"
     ;;
 
 stop)
@@ -64,7 +77,14 @@ stop)
     then
         echo "warn: could not find file $PIDFILE"
     else
-        kill -9 $(cat $PIDFILE)
+        UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
+        if [ -e $UDSFILE ];then
+            RESULT=$(echo "unfwd;stopapp;exitsrv;" | nc -U $UDSFILE)
+            echo "STOP APP AND EXIT SRV: $RESULT"
+        else
+            echo "warn: could not find Unix Domain Socket $UDSFILE, just kill -9 $(cat $PIDFILE)"
+            kill -9 $(cat $PIDFILE)
+        fi
         rm $PIDFILE
         echo STOPPED
     fi
