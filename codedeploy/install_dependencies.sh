@@ -70,10 +70,10 @@ if [ ! -f $USER_HOME/etc/logback.xml ]; then
 fi
 
 # gen zkbooter.properties
-if [ ! -f $USER_HOME/etc/zkbooter.properties ]; then
-    wget $3 -O $USER_HOME/etc/zkbooter.properties
-    echo "$MODULE_NAME" >> $USER_HOME/etc/zkbooter.properties
-fi
+# if [ ! -f $USER_HOME/etc/zkbooter.properties ]; then
+#    wget $3 -O $USER_HOME/etc/zkbooter.properties
+#    echo "$MODULE_NAME" >> $USER_HOME/etc/zkbooter.properties
+# fi
 
 EOF
 
