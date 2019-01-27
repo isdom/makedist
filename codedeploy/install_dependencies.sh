@@ -54,7 +54,7 @@ fi
 
 su - $user << EOF
 
-# try to create logback.xml zkbooter.properties & run.cfg
+# init run.cfg & logback.xml if NOT exist
 if [ ! -d $USER_HOME/etc ]; then
     mkdir $USER_HOME/etc
 fi
