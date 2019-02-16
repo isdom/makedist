@@ -81,9 +81,15 @@ stop)
         if [ -e $UDSFILE ];then
             RESULT=$(echo "unfwd;" | nc -U $UDSFILE)
             echo "invoke un-forward: $RESULT"
+            trycnt=0
             RESULT=$(echo "tradecnt;" | nc -U $UDSFILE)
             while [ "$RESULT" != "0" ];do
-                echo "wait 3s bcsof current trade count: $RESULT"
+                let trycnt+=1
+                if  [ $trycnt -gt 10 ];then
+                    echo "current trade count is $RESULT, wait for $trycnt times 3s, skip trade count and continue stopapp"
+                    break
+                fi
+                echo "wait 3s because of current trade count is $RESULT"
                 sleep 3s
                 RESULT=$(echo "tradecnt;" | nc -U $UDSFILE)
             done
