@@ -66,8 +66,8 @@ start)
         echo "[$trycnt]: wait 3s for unix domain socket file: $UDSFILE"
         sleep 3s
     done
-    read endpoint namespace role dataid acmgroup < /home/gdt/etc/acmboot.cfg
-    RESULT=$(echo "startapp $endpoint $namespace $role $dataid $acmgroup unit/xbooter.xml;" | nc -U $UDSFILE)
+    read endpoint namespace role dataid acmgroup < /home/gdt/etc/acmbootV2.cfg
+    RESULT=$(echo "startapp $endpoint $namespace $role $dataid $acmgroup;" | nc -U $UDSFILE)
     echo "START SRV AND APP: $RESULT"
     ;;
 
