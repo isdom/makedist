@@ -19,12 +19,10 @@ fi
 
 PIDFILE=$SERVER_HOME/pids/$SERVER_NAME.pid
 
-BOOT_JAR=$(find $SERVER_HOME/lib -name 'jocean-j2se*')
-
-ECSID=$(curl -s http://100.100.100.200/latest/meta-data/instance-id)
-
 case $1 in
 start)
+    BOOT_JAR=$(find $SERVER_HOME/lib -name 'jocean-j2se*')
+    ECSID=$(curl -s http://100.100.100.200/latest/meta-data/instance-id)
     ETCDIR=$SERVER_HOME/../etc
     read HEAP_MEMORY PERM_MEMORY DIRECT_MEMORY < $ETCDIR/run.cfg
     echo "Starting $SERVER_NAME with params heap size: $HEAP_MEMORY, perm size: $PERM_MEMORY, direct size: $DIRECT_MEMORY"
