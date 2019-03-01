@@ -21,7 +21,7 @@ PIDFILE=$SERVER_HOME/pids/$SERVER_NAME.pid
 
 BOOT_JAR=$(find $SERVER_HOME/lib -name 'jocean-j2se*')
 
-ECSID=$(curl http://100.100.100.200/latest/meta-data/instance-id)
+ECSID=$(curl -s http://100.100.100.200/latest/meta-data/instance-id)
 
 case $1 in
 start)
