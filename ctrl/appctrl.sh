@@ -21,7 +21,7 @@ PIDFILE=$SERVER_HOME/pids/$SERVER_NAME.pid
 
 BOOT_JAR=$(find $SERVER_HOME/lib -name 'jocean-j2se*')
 
-INSTID=$(curl http://100.100.100.200/latest/meta-data/instance-id)
+ECSID=$(curl http://100.100.100.200/latest/meta-data/instance-id)
 
 case $1 in
 start)
@@ -53,7 +53,7 @@ start)
     JAVA_OPTS="${JAVA_OPTS} -Dio.netty.leakDetection.level=PARANOID"
     JAVA_OPTS="${JAVA_OPTS} -Dio.netty.leakDetection.maxRecords=50"
     JAVA_OPTS="${JAVA_OPTS} -Dio.netty.leakDetection.acquireAndReleaseOnly=true"
-    JAVA_OPTS="${JAVA_OPTS} -Duser.dir=$SERVER_HOME -Dapp.name=$SERVER_NAME -Dinstance.id=$INSTID"
+    JAVA_OPTS="${JAVA_OPTS} -Duser.dir=$SERVER_HOME -Dapp.name=$SERVER_NAME -Decs.id=$ECSID"
     echo "start java -jar ${BOOT_JAR} with args ${JAVA_OPTS}"
     nohup java $JAVA_OPTS -jar $BOOT_JAR >/dev/null &
     echo $! > $PIDFILE
