@@ -19,8 +19,7 @@ fi
 
 PIDFILE=$SERVER_HOME/pids/$SERVER_NAME.pid
 
-case $1 in
-start)
+function launchjar() {
     BOOT_JAR=$(find $SERVER_HOME/lib -name 'jocean-j2se*')
     ECSID=$(curl -s http://100.100.100.200/latest/meta-data/instance-id)
     ETCDIR=$SERVER_HOME/../etc
@@ -39,7 +38,6 @@ start)
         -Direct*) DIRECT_MEMORY="${ARGS[$i+1]}" ;;
         esac
     done
-    # JAVA_OPTS="${JAVA_OPTS} -Dcom.sun.management.jmxremote.port=${JMX_PORT}"
     JAVA_OPTS="${JAVA_OPTS} -Xms${HEAP_MEMORY} -Xmx${HEAP_MEMORY} -XX:PermSize=${PERM_MEMORY} -XX:MaxPermSize=${PERM_MEMORY}  "
     JAVA_OPTS="${JAVA_OPTS} -XX:MaxDirectMemorySize=${DIRECT_MEMORY}"
     JAVA_OPTS="${JAVA_OPTS} -XX:+AlwaysPreTouch"
@@ -66,6 +64,17 @@ start)
         echo "[$trycnt]: wait 3s for unix domain socket file: $UDSFILE"
         sleep 3s
     done
+}
+
+case $1 in
+launch)
+    launchjar
+    echo "JAR LAUNCHED"
+    ;;
+    
+start)
+    launchjar
+    UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
     read endpoint namespace role dataid < /home/gdt/etc/acmbootV3.cfg
     RESULT=$(echo "startapp $endpoint $namespace $role $dataid;" | nc -U $UDSFILE)
     echo "START SRV AND APP: $RESULT"
