@@ -24,4 +24,4 @@ timestamp=`echo $[$(date +%s%N)/1000000]`
 signStr=$namespace+$group+$timestamp
 signContent=`echo -n $signStr | openssl dgst -hmac $secretKey -sha1 -binary | base64`
 ## request to get a config
-curl -H "Spas-AccessKey:"$accessKey -H "Spas-Signature:"$signContent -H "timeStamp:"$timestamp -H "Spas-SecurityToken:"$securityToken "http://"$serverIp":8080/diamond-server/config.co?dataId="$dataId"&group="$group"&tenant="$namespace
+curl -s -H "Spas-AccessKey:"$accessKey -H "Spas-Signature:"$signContent -H "timeStamp:"$timestamp -H "Spas-SecurityToken:"$securityToken "http://"$serverIp":8080/diamond-server/config.co?dataId="$dataId"&group="$group"&tenant="$namespace
