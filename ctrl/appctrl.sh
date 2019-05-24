@@ -71,6 +71,12 @@ launch)
     launchjar
     echo "JAR LAUNCHED"
     ;;
+
+bsh)
+    UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
+    APPVER=$(echo "bsh $2;" | nc -U $UDSFILE)
+    echo $APPVER
+    ;;
     
 start)
     launchjar
