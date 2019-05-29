@@ -57,7 +57,7 @@ function launchjar() {
     trycnt=0
     while [ ! -e $UDSFILE ];do
         let trycnt+=1
-        if  [ $trycnt -gt 3 ];then
+        if  [ $trycnt -gt 10 ];then
             echo "can't find unix domain socket file: $UDSFILE, exit with -1"
             exit -1
         fi
@@ -100,7 +100,7 @@ stop)
             RESULT=$(echo "tradecnt;" | nc -U $UDSFILE)
             while [ "$RESULT" != "0" ];do
                 let trycnt+=1
-                if  [ $trycnt -gt 10 ];then
+                if  [ $trycnt -gt 5 ];then
                     echo "current trade count is $RESULT, wait for $trycnt times 3s, skip trade count and continue stopapp"
                     break
                 fi
