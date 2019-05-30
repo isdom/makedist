@@ -25,7 +25,7 @@ function set_module_var() {
 set_module_var
 
 #change owner
-chown -R $MODULE_NAME $MODULE_HOME
+chown -R $MODULE_NAME.gdt $MODULE_HOME
 
 #add execute mode
 chmod a+x $MODULE_HOME/*.sh
