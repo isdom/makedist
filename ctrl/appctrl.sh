@@ -77,7 +77,13 @@ bsh)
     APPVER=$(echo "bsh $2;" | nc -U $UDSFILE)
     echo $APPVER
     ;;
-    
+
+cmd)
+    UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
+    echo "$2 $3 $4 $5 $6 $7 $8 $9;" | nc -U $UDSFILE > cmd.log
+    cat cmd.log
+    ;;
+
 start)
     launchjar
     UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
