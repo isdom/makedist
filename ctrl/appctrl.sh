@@ -74,13 +74,13 @@ launch)
 
 bsh)
     UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
-    APPVER=$(echo "bsh $2;" | nc -U $UDSFILE)
+    APPVER=$(echo "bsh $2;" | nc --no-shutdown -U $UDSFILE)
     echo $APPVER
     ;;
 
 cmd)
     UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
-    echo "$2 $3 $4 $5 $6 $7 $8 $9;" | nc -U $UDSFILE > cmd.log
+    echo "$2 $3 $4 $5 $6 $7 $8 $9;" | nc --no-shutdown -U $UDSFILE > cmd.log
     cat cmd.log
     ;;
 
@@ -88,7 +88,7 @@ start)
     launchjar
     UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
     read endpoint namespace role dataid < /home/gdt/etc/acmbootV3.cfg
-    RESULT=$(echo "startapp $endpoint $namespace $role $dataid;" | nc -U $UDSFILE)
+    RESULT=$(echo "startapp $endpoint $namespace $role $dataid;" | nc --no-shutdown -U $UDSFILE)
     echo "START SRV AND APP: $RESULT"
     ;;
 
@@ -100,10 +100,10 @@ stop)
     else
         UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
         if [ -e $UDSFILE ];then
-            RESULT=$(echo "unfwd;" | nc -U $UDSFILE)
+            RESULT=$(echo "unfwd;" | nc --no-shutdown -U $UDSFILE)
             echo "invoke un-forward: $RESULT"
             trycnt=0
-            RESULT=$(echo "tradecnt;" | nc -U $UDSFILE)
+            RESULT=$(echo "tradecnt;" | nc --no-shutdown -U $UDSFILE)
             while [ "$RESULT" != "0" ];do
                 let trycnt+=1
                 if  [ $trycnt -gt 5 ];then
@@ -112,10 +112,10 @@ stop)
                 fi
                 echo "wait 3s because of current trade count is $RESULT"
                 sleep 3s
-                RESULT=$(echo "tradecnt;" | nc -U $UDSFILE)
+                RESULT=$(echo "tradecnt;" | nc --no-shutdown -U $UDSFILE)
             done
             echo "current trade count is $RESULT, so stop app and exit srv"
-            RESULT=$(echo "stopapp;exitsrv;" | nc -U $UDSFILE)
+            RESULT=$(echo "stopapp;exitsrv;" | nc --no-shutdown -U $UDSFILE)
             echo "STOP APP AND EXIT SRV: $RESULT"
         else
             echo "warn: could not find Unix Domain Socket $UDSFILE, just kill -9 $(cat $PIDFILE)"
