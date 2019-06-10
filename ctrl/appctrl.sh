@@ -74,14 +74,19 @@ launch)
 
 bsh)
     UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
-    APPVER=$(echo "bsh $2;" | nc --no-shutdown -U $UDSFILE)
-    echo $APPVER
+    BSH_RET=$(echo "bsh $2;" | nc --no-shutdown -U $UDSFILE)
+    echo $BSH_RET
     ;;
 
+cmd_ret)
+    UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
+    CMD_RET=$(echo "$2 $3 $4 $5 $6 $7 $8 $9;" | nc --no-shutdown -U $UDSFILE)
+    echo $CMD_RET
+    ;;
+    
 cmd)
     UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
-    echo "$2 $3 $4 $5 $6 $7 $8 $9;" | nc --no-shutdown -U $UDSFILE > cmd.log
-    cat cmd.log
+    echo "$2 $3 $4 $5 $6 $7 $8 $9;" | nc --no-shutdown -U $UDSFILE
     ;;
 
 start)
