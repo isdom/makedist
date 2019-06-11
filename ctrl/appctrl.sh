@@ -93,8 +93,8 @@ start)
     launchjar
     UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
     read endpoint namespace role dataid < /home/gdt/etc/acmbootV3.cfg
-    RESULT=$(echo "startapp $endpoint $namespace $role $dataid;" | nc --no-shutdown -U $UDSFILE)
-    echo "START SRV AND APP: $RESULT"
+    echo "START SRV AND APP..."
+    echo "startapp $endpoint $namespace $role $dataid;" | nc --no-shutdown -U $UDSFILE
     ;;
 
 stop)
