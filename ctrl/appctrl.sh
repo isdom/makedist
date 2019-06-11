@@ -120,8 +120,9 @@ stop)
                 RESULT=$(echo "tradecnt;" | nc --no-shutdown -U $UDSFILE)
             done
             echo "current trade count is $RESULT, so stop app and exit srv"
-            RESULT=$(echo "stopapp;exitsrv;" | nc --no-shutdown -U $UDSFILE)
-            echo "STOP APP AND EXIT SRV: $RESULT"
+            echo "STOP APP AND EXIT SRV..."
+            echo "stopapp;" | nc --no-shutdown -U $UDSFILE
+            echo "exitsrv;" | nc --no-shutdown -U $UDSFILE
         else
             echo "warn: could not find Unix Domain Socket $UDSFILE, just kill -9 $(cat $PIDFILE)"
             kill -9 $(cat $PIDFILE)
