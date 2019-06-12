@@ -74,19 +74,19 @@ launch)
 
 bsh)
     UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
-    BSH_RET=$(echo "bsh $2;" | nc --no-shutdown -U $UDSFILE)
+    BSH_RET=$(echo "bsh $2" | nc --no-shutdown -U $UDSFILE)
     echo $BSH_RET
     ;;
 
 cmd_ret)
     UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
-    CMD_RET=$(echo "$2 $3 $4 $5 $6 $7 $8 $9;" | nc --no-shutdown -U $UDSFILE)
+    CMD_RET=$(echo "$2 $3 $4 $5 $6 $7 $8 $9" | nc --no-shutdown -U $UDSFILE)
     echo $CMD_RET
     ;;
     
 cmd)
     UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
-    echo "$2 $3 $4 $5 $6 $7 $8 $9;" | nc --no-shutdown -U $UDSFILE
+    echo "$2 $3 $4 $5 $6 $7 $8 $9" | nc --no-shutdown -U $UDSFILE
     ;;
 
 start)
@@ -94,7 +94,7 @@ start)
     UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
     read endpoint namespace role dataid < /home/gdt/etc/acmbootV3.cfg
     echo "START SRV AND APP..."
-    echo "startapp $endpoint $namespace $role $dataid;" | nc --no-shutdown -U $UDSFILE
+    echo "startapp $endpoint $namespace $role $dataid" | nc --no-shutdown -U $UDSFILE
     ;;
 
 stop)
@@ -105,10 +105,10 @@ stop)
     else
         UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
         if [ -e $UDSFILE ];then
-            RESULT=$(echo "unfwd;" | nc --no-shutdown -U $UDSFILE)
+            RESULT=$(echo "unfwd" | nc --no-shutdown -U $UDSFILE)
             echo "invoke un-forward: $RESULT"
             trycnt=0
-            RESULT=$(echo "tradecnt;" | nc --no-shutdown -U $UDSFILE)
+            RESULT=$(echo "tradecnt" | nc --no-shutdown -U $UDSFILE)
             while [ "$RESULT" != "0" ];do
                 let trycnt+=1
                 if  [ $trycnt -gt 5 ];then
@@ -117,12 +117,12 @@ stop)
                 fi
                 echo "wait 3s because of current trade count is $RESULT"
                 sleep 3s
-                RESULT=$(echo "tradecnt;" | nc --no-shutdown -U $UDSFILE)
+                RESULT=$(echo "tradecnt" | nc --no-shutdown -U $UDSFILE)
             done
             echo "current trade count is $RESULT, so stop app and exit srv"
             echo "STOP APP AND EXIT SRV..."
-            echo "stopapp;" | nc --no-shutdown -U $UDSFILE
-            echo "exitsrv;" | nc --no-shutdown -U $UDSFILE
+            echo "stopapp" | nc --no-shutdown -U $UDSFILE
+            echo "exitsrv" | nc --no-shutdown -U $UDSFILE
         else
             echo "warn: could not find Unix Domain Socket $UDSFILE, just kill -9 $(cat $PIDFILE)"
             kill -9 $(cat $PIDFILE)
