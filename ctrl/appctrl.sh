@@ -72,9 +72,9 @@ launch)
     echo "JAR LAUNCHED"
     ;;
 
-bsh)
+bsheval)
     UDSFILE=$SERVER_HOME/$(cat $PIDFILE).socket
-    BSH_RET=$(echo "bsh $2" | nc --no-shutdown -U $UDSFILE)
+    BSH_RET=$(echo "bsheval $2" | nc --no-shutdown -U $UDSFILE)
     echo $BSH_RET
     ;;
 
