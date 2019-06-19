@@ -72,6 +72,7 @@ task makeDist(dependsOn: [init, cleanAll], type: Zip) {
     from('ctrl') {
         fileMode 0755
     }
+    from 'conf'
     from "$buildDir/module.txt"
     from "$buildDir/appspec.yml"
     archiveName = "${distFileName}.zip"
