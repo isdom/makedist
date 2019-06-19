@@ -1,9 +1,5 @@
 #!/bin/sh
 
-# $1 -- logback_url
-# $2 -- runcfg_url
-# $3 -- zkboot_url
-
 # BASE: the caller's base path
 # MODULE_NAME: module's name, eg: yjy-j1cn
 # MODULE_HOME: module's home, eg: /home/yjy-j1cn/current
@@ -58,22 +54,6 @@ su - $user << EOF
 if [ ! -d $USER_HOME/etc ]; then
     mkdir $USER_HOME/etc
 fi
-
-# gen run.cfg
-if [ ! -f $USER_HOME/etc/run.cfg ]; then
-    wget $2 -O $USER_HOME/etc/run.cfg
-fi
-
-# gen logback.xml
-if [ ! -f $USER_HOME/etc/logback.xml ]; then
-    wget $1 -O $USER_HOME/etc/logback.xml
-fi
-
-# gen zkbooter.properties
-# if [ ! -f $USER_HOME/etc/zkbooter.properties ]; then
-#    wget $3 -O $USER_HOME/etc/zkbooter.properties
-#    echo "$MODULE_NAME" >> $USER_HOME/etc/zkbooter.properties
-# fi
 
 EOF
 
