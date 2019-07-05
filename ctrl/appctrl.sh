@@ -50,6 +50,7 @@ function launchjar() {
     JAVA_OPTS="${JAVA_OPTS} -Dio.netty.leakDetection.maxRecords=50"
     JAVA_OPTS="${JAVA_OPTS} -Dio.netty.leakDetection.acquireAndReleaseOnly=true"
     JAVA_OPTS="${JAVA_OPTS} -Duser.dir=$SERVER_HOME -Dapp.name=$SERVER_NAME -Decs.id=$ECSID"
+    JAVA_OPTS="${JAVA_OPTS} -Dmanagement.metrics.tags.application=$SERVER_NAME"
     echo "start java -jar ${BOOT_JAR} with args ${JAVA_OPTS}"
     nohup java $JAVA_OPTS -jar $BOOT_JAR >/dev/null &
     echo $! > $PIDFILE
