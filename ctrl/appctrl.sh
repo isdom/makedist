@@ -38,7 +38,9 @@ function launchjar() {
         -Direct*) DIRECT_MEMORY="${ARGS[$i+1]}" ;;
         esac
     done
-    JAVA_OPTS="${JAVA_OPTS} -Xms${HEAP_MEMORY} -Xmx${HEAP_MEMORY} -XX:PermSize=${PERM_MEMORY} -XX:MaxPermSize=${PERM_MEMORY}  "
+    JAVA_OPTS="${JAVA_OPTS} -Xms${HEAP_MEMORY} -Xmx${HEAP_MEMORY} -XX:PermSize=${PERM_MEMORY} -XX:MaxPermSize=${PERM_MEMORY} "
+    # CompressedClassSpaceSize reference: https://www.jianshu.com/p/b99c9ef0eb16
+    JAVA_OPTS="${JAVA_OPTS} -XX:CompressedClassSpaceSize=64M"
     JAVA_OPTS="${JAVA_OPTS} -XX:MaxDirectMemorySize=${DIRECT_MEMORY}"
     JAVA_OPTS="${JAVA_OPTS} -XX:+AlwaysPreTouch"
     JAVA_OPTS="${JAVA_OPTS} -Dio.netty.recycler.maxCapacity=0"
